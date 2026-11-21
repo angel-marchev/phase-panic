@@ -1,0 +1,90 @@
+import sys
+import time
+import cv2
+import numpy as np
+
+cv2.setNumThreads(1)
+detector = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
+eyes = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_eye.xml")
+camera = cv2.VideoCapture(0)
+camera.set(cv2.CAP_PROP_FRAME_WIDTH, 320)
+camera.set(cv2.CAP_PROP_FRAME_HEIGHT, 240)
+size = 96
+tracked = [None, None]
+grid_x, grid_y = np.meshgrid(np.arange(size, dtype=np.float32), np.arange(size, dtype=np.float32))
+def exaggerate(image, eye_centers, mouth, strain):
+    map_x, map_y = grid_x.copy(), grid_y.copy()
+    for ex, ey in eye_centers:
+        dx, dy = grid_x-ex, grid_y-ey
+        influence = np.maximum(0, 1-(dx/15)**2-(dy/11)**2)**2
+        map_x -= dx*influence*(.32+.17*strain)
+        map_y -= dy*influence*(.52+.20*strain)
+    mx, my = mouth
+    dx, dy = grid_x-mx, grid_y-my
+    influence = np.maximum(0,1-(dx/23)**2-(dy/10)**2)**2
+    map_x -= dx*influence*.45
+    map_y += dy*influence*.22
+    return cv2.remap(image,map_x,map_y,cv2.INTER_LINEAR,borderMode=cv2.BORDER_REPLICATE)
+try:
+    if not camera.isOpened() or detector.empty():
+        sys.exit(1)
+    # An open camera owns the portrait even when no face is in frame yet.
+    sys.stdout.buffer.write(bytes([255]) + bytes(8 + size*size*3))
+    sys.stdout.buffer.flush()
+    misses = 0
+    while True:
+        ok, frame = camera.read()
+        if not ok:
+            misses += 1
+            if misses >= 20:
+                break
+            time.sleep(.1)
+            continue
+        misses = 0
+        frame = cv2.flip(frame, 1)
+        gray = cv2.equalizeHist(cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY))
+        faces = detector.detectMultiScale(gray, 1.13, 4, minSize=(44, 44))
+        largest = sorted(faces,key=lambda box: box[2]*box[3],reverse=True)[:2]
+        def center(box):
+            return box[0]+box[2]*.5
+        if len(largest)==2:
+            slots = enumerate(sorted(largest,key=center))
+        elif len(largest)==1:
+            current = largest[0]
+            known = [i for i,box in enumerate(tracked) if box is not None]
+            slot = min(known,key=lambda i: abs(center(current)-center(tracked[i]))) if known else 0
+            slots = [(slot,current)]
+        else:
+            slots = []
+        for slot,current in slots:
+            previous = tracked[slot]
+            bounds = current if previous is None or abs(center(current)-center(previous)) > current[2] else .36*current+.64*previous
+            tracked[slot] = bounds
+            x, y, w, h = map(int, bounds)
+            pad = round(max(w, h) * .16)
+            x0, y0 = max(0, x-pad), max(0, y-pad)
+            x1, y1 = min(frame.shape[1], x+w+pad), min(frame.shape[0], y+h+pad)
+            crop = frame[y0:y1, x0:x1]
+            found = eyes.detectMultiScale(gray[y:y+h//2, x:x+w], 1.15, 4, minSize=(8, 8))
+            detected = [(x+ex+ew//2,y+ey+eh//2) for ex,ey,ew,eh in found]
+            def get_eye(side):
+                candidates = [eye for eye in detected if (eye[0] >= x+w*.5) == side]
+                default = (x+w*(.69 if side else .31),y+h*.37)
+                return min(candidates,key=lambda e: abs(e[0]-default[0])+abs(e[1]-default[1])) if candidates else default
+            def px(value, start, end):
+                return min(95, max(0, round((value-start)*size/(end-start))))
+            def crop_point(point):
+                return px(point[0],x0,x1), px(point[1],y0,y1)
+            eye_centers = [crop_point(get_eye(side)) for side in (False,True)]
+            ex, ey = eye_centers[1]
+            mouth = crop_point((x+w*.5,y+h*.8))
+            marks = bytes((px(x+w*.22, x0, x1), px(y+h*.25, y0, y1),
+                           px(x+w*.75, x0, x1), px(y+h*.65, y0, y1),
+                           ex, ey, *mouth))
+            rgb = cv2.cvtColor(cv2.resize(crop, (size, size)), cv2.COLOR_BGR2RGB)
+            rgb = exaggerate(rgb,eye_centers,mouth,.7)
+            sys.stdout.buffer.write(bytes([slot]) + marks + rgb[::-1].tobytes())
+            sys.stdout.buffer.flush()
+        time.sleep(.04)
+finally:
+    camera.release()

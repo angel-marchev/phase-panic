@@ -1,0 +1,17 @@
+# Local Unity imports, build products, and editor state
+/Obsession/[Ll]ibrary/
+/Obsession/[Tt]emp/
+/Obsession/[Oo]bj/
+/Obsession/[Ll]ogs/
+/Obsession/[Uu]ser[Ss]ettings/
+/Obsession/[Bb]uild/
+/Obsession/[Bb]uilds/
+/PhasePanic-Linux-x86_64/
+*.csproj
+*.sln
+.vs/
+.idea/
+
+# Local diagnostics and original package download (controller sources are in Assets)
+/Pasted image*.png
+/DHO-Arcade-GameJam-Template.unitypackage

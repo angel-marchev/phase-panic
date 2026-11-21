@@ -1,0 +1,544 @@
+# OBSESSION - Harmonic Silhouette Matching
+
+## Scope note for Codex / Unity
+
+**Status:** Raw concept / exploratory core-mechanic preview.
+
+This document is a starting plan for prototyping one potential gameplay element in Unity through Codex. It is not a specification for the full game, a finalized game design document, or a commitment to any particular technical implementation. The working title, scoring, progression, tutorials, visual presentation, and mathematical implementation suggestions remain open to experimentation.
+
+The immediate objective is a small, playable proof of concept: a first-person perspective corridor, a target silhouette, a harmonic with adjustable amplitude, frequency and phase, a launch and impact sequence, residual calculation, movement of the residual toward the player, visible vertical magnification, and an end-of-sequence decomposition reveal. Prioritize testing how this interaction feels and how clearly it communicates harmonic decomposition. Retain residual values in original mathematical units; treat visual magnification as a display transformation only. Other ideas in the discussion below are exploratory and do not need to be implemented in the first preview.
+
+---
+
+## Original brainstorming response (full text)
+
+Yes — this is now a **real core mechanic**, not just a theme.
+
+What you’ve defined is strong because it combines:
+
+- **mathematical decomposition**
+- **visual metaphor**
+- **progressive refinement**
+- **player obsession through shrinking residuals**
+
+The really elegant part is this:
+
+> The player does not directly “draw the silhouette.”
+> They repeatedly contribute a harmonic component, and the game turns the remaining error into the next target.
+
+That is a very clean ludic expression of **Fourier-style approximation**.
+
+---
+
+# Formalized core mechanic
+
+## High concept
+
+A **silhouette-matching game using harmonics**.
+
+The player stands in a **first-person corridor** facing a distant target silhouette. On each turn, they construct a harmonic component by adjusting:
+
+- **Amplitude**
+- **Frequency**
+- **Phase**
+
+They then **launch** this harmonic shape down the corridor toward the target silhouette.
+
+When the launched shape reaches the target:
+
+1. it is compared against the current target,
+2. the **residual** is computed,
+3. that residual becomes the **new target**,
+4. the new target appears **one corridor block closer** to the player,
+5. the camera / framing **zooms vertically** to emphasize that the player is now matching finer detail.
+
+This repeats until the corridor steps are exhausted.
+
+At the end, the game reveals:
+
+- the **original silhouette**
+- the **stack of all harmonics used**
+- the **sum of those harmonics**
+- the **difference between original and reconstruction**
+- the **final score**
+
+---
+
+# Why this works
+
+This mechanic is strong for several reasons.
+
+## 1. The player performs decomposition indirectly
+
+The player is not told “now do Fourier decomposition.”
+
+Instead, they experience the logic of it:
+
+- choose a component,
+- subtract it from the target,
+- examine what remains,
+- repeat.
+
+That is exactly the right educational structure.
+
+## 2. Residual-as-target is brilliant
+
+This is the most original part.
+
+Instead of just showing “your current approximation vs target,” the game converts the mismatch into the next objective.
+
+That means the game loop itself teaches:
+
+- coarse approximation first,
+- fine approximation later,
+- remaining error becomes increasingly local / subtle,
+- obsession emerges because the player is literally chasing smaller and smaller flaws.
+
+## 3. The corridor gives the abstraction a physical form
+
+The corridor does a lot of work:
+
+- far distance = big, coarse structure
+- near distance = detail / scrutiny
+- blocks = decomposition stages
+- forward progression = approximation progress
+- approaching residual = psychologically intense endgame
+
+This gives the math a **spatial metaphor**, which is great for memorability.
+
+---
+
+# Recommended formal definition
+
+## Representation
+
+You probably want to define the silhouette as a **1D height function** over horizontal position, rather than a fully arbitrary filled 2D image.
+
+So for a width-normalized coordinate $x \in [0,1]$:
+
+$$
+S(x)
+$$
+
+is the target silhouette profile.
+
+Each launched harmonic is:
+
+$$
+H_n(x)=A_n \sin(2\pi f_n x + \phi_n)
+$$
+
+or possibly cosine/sine equivalent.
+
+The running reconstruction after $k$ shots is:
+
+$$
+R_k(x)=\sum_{n=1}^{k} H_n(x)
+$$
+
+The residual is:
+
+$$
+E_k(x)=S(x)-R_k(x)
+$$
+
+And **the next target is $E_k(x)$**, visually re-centered / rescaled for readability.
+
+That gives you a very clear formal system.
+
+---
+
+# Core loop
+
+## Per turn
+
+1. **Observe current target**
+   - displayed as a silhouette at the end of the corridor
+
+2. **Tune one harmonic**
+   - amplitude
+   - frequency
+   - phase
+
+3. **Preview shape**
+   - player sees the waveform/silhouette generated by the chosen harmonic
+
+4. **Launch**
+   - harmonic travels down corridor as a visible moving shape
+
+5. **Impact / compare**
+   - on contact with target, game computes residual
+
+6. **Refinement transition**
+   - target transforms into residual
+   - residual moves one block closer
+   - visible zoom or magnification occurs
+   - next turn begins
+
+7. **Repeat until corridor exhausted or score threshold reached**
+
+---
+
+# Strong visual interpretation
+
+To make this legible, I would suggest the following:
+
+## The target silhouette
+Displayed as a vertical profile panel or “energy wall” at the corridor’s end.
+
+## The launched harmonic
+Appears as a luminous waveform / silhouette-strip traveling forward.
+
+## The hit moment
+On impact, show:
+
+- harmonic overlay
+- matched regions briefly flash
+- unmatched regions remain highlighted
+- then the residual peels away and becomes the next target
+
+## Zoom
+This is important:
+the new residual should not merely move closer — it should also be **visibly vertically magnified**, so the player feels:
+
+> “Now I’m dealing with smaller details.”
+
+That is crucial to the obsession fantasy.
+
+---
+
+# Suggested terminology
+
+You already have the right words, but here’s a clean vocabulary set:
+
+- **Target** = current silhouette to match
+- **Harmonic** = one player-generated component
+- **Launch** = committing the harmonic
+- **Residual** = difference after subtraction
+- **Step** or **Block** = one refinement stage in corridor
+- **Reconstruction** = cumulative sum of launched harmonics
+- **Final Fit** = total match score at end
+
+Possible game verbs:
+
+- **Tune**
+- **Launch**
+- **Resolve**
+- **Refine**
+
+---
+
+# Important design choice: subtraction or best-fit projection?
+
+There are two versions of the mechanic.
+
+## Version A: literal subtraction
+Whatever harmonic the player creates is subtracted directly from the current target.
+
+### Pros
+- intuitive
+- tactile
+- feels like “I am contributing this exact piece”
+
+### Cons
+- can be messy if player choices are poor
+- residual may become chaotic or harder to read
+- less mathematically “clean”
+
+## Version B: projected harmonic extraction
+The player proposes a harmonic family, and the game computes the best-fit coefficient for that chosen frequency/phase basis.
+
+For example, the player chooses frequency and phase, and the game determines the effective amplitude contribution automatically or semi-automatically.
+
+### Pros
+- cleaner pedagogy
+- more stable residual progression
+- easier balancing
+
+### Cons
+- less direct authorship
+- may feel less toy-like
+
+## My recommendation
+Use a hybrid:
+
+- player controls **amplitude, frequency, phase**
+- but the game may softly **snap** or **quantize** near effective values
+- residual is slightly normalized for readability after each step
+
+That preserves agency without making the system unreadable.
+
+---
+
+# What the corridor progression really means
+
+Each corridor block is a **refinement stage**.
+
+You can think of the stages like this:
+
+## Stage 1: Coarse shape
+Large-scale form dominates.
+Low-frequency harmonics matter most.
+
+## Stage 2: Structural correction
+Main bumps, slopes, and asymmetries become obvious.
+
+## Stage 3: Secondary details
+More local deviations stand out.
+
+## Stage 4+: Fine details
+Tiny imperfections remain.
+Player becomes fixated on very small corrections.
+
+This is exactly where the **obsession theme** becomes gameplay.
+
+The player will feel:
+- “That’s close enough.”
+- then immediately:
+- “But I can still improve it.”
+
+That’s the whole game.
+
+---
+
+# End-of-level reveal
+
+Your proposed ending screen is excellent and should absolutely stay.
+
+## Final reveal screen should show:
+
+### 1. Original silhouette
+The initial target.
+
+### 2. All harmonics used
+Displayed stacked vertically in order of use.
+
+This is both beautiful and educational.
+
+### 3. Cumulative reconstruction
+The sum of all launched harmonics.
+
+### 4. Overlay comparison
+Original vs reconstruction.
+
+### 5. Final residual
+What remains unmatched.
+
+### 6. Score breakdown
+Accuracy, efficiency, elegance, etc.
+
+This end-state gives the player:
+- satisfaction,
+- clarity,
+- post-hoc learning,
+- a feeling of “I built this from components.”
+
+---
+
+# Scoring ideas
+
+You asked about scoring “somehow” — here’s a good structure.
+
+## Primary score dimensions
+
+### 1. Match Accuracy
+How close the final reconstruction is to the original silhouette.
+
+Possible metric:
+- normalized mean squared error
+- normalized absolute error
+- overlap score
+
+### 2. Efficiency
+How much accuracy was achieved with how few harmonics.
+
+Reward:
+- fewer steps
+- smaller total amplitude budget
+- lower total complexity
+
+### 3. Elegance
+Encourages meaningful decomposition instead of brute force.
+
+Possible bonuses:
+- using lower frequencies effectively
+- smooth progression from coarse to fine
+- avoiding redundant harmonics
+
+### 4. Consistency
+Reward players whose residual shrinks steadily across steps.
+
+This helps avoid random flailing.
+
+---
+
+## Example score formula
+
+A simple version:
+
+$$
+\text{Score} = 1000 \cdot \text{Accuracy} + 300 \cdot \text{Efficiency} + 200 \cdot \text{Elegance}
+$$
+
+Where:
+
+- **Accuracy** = based on final residual size
+- **Efficiency** = fewer harmonics / fewer corridor steps used
+- **Elegance** = lower complexity cost, smoother frequency progression, fewer “wasted” shots
+
+You could also grade:
+- **S / A / B / C**
+- with sublabels like:
+  - Precise
+  - Efficient
+  - Elegant
+  - Obsessive
+
+---
+
+# A very important UX challenge
+
+This concept is good, but the biggest risk is:
+
+> Players may not understand what changing amplitude, frequency, and phase is doing fast enough.
+
+So the game needs extremely strong feedback.
+
+## You probably need all of these:
+
+### Live harmonic preview
+Before launch, show the waveform clearly.
+
+### Overlay preview
+Show how the chosen harmonic would affect the current target.
+
+### Ghost residual prediction
+Optionally preview expected remaining error.
+
+### Immediate visual explanation
+When a harmonic hits:
+- show what got corrected
+- show what got worse
+- show the new residual
+
+Without this, players may experience the game as arbitrary.
+
+---
+
+# Suggestions to make it playable
+
+## 1. Limit one parameter complexity at a time
+Early levels should isolate learning.
+
+### Tutorial progression
+- Level 1: amplitude only
+- Level 2: amplitude + phase
+- Level 3: fixed harmonic set
+- Level 4: full amplitude/frequency/phase control
+
+## 2. Give a constrained harmonic palette
+Instead of any real-valued frequency, use a curated set.
+
+For example:
+- 1x
+- 2x
+- 3x
+- 5x
+- 8x
+
+That makes the game more strategic and less like freeform signal fitting.
+
+## 3. Normalize residual display
+Since later residuals are smaller, visually magnify them so the player can still work meaningfully.
+
+You already proposed vertical zoom — that’s the right move.
+
+## 4. Consider sign / inversion cues
+Residuals can be positive or negative relative to the silhouette. The player should clearly understand whether they over-added or under-added.
+
+Color coding could help:
+- one color for excess
+- another for missing regions
+
+---
+
+# Possible level structure
+
+## Level objective types
+
+### 1. Reach minimum residual
+Standard puzzle objective.
+
+### 2. Match within limited launches
+Tests efficiency.
+
+### 3. Use restricted harmonic set
+Tests understanding.
+
+### 4. Hit target score
+Mixes accuracy and elegance.
+
+### 5. Perfect decomposition challenge
+For advanced players.
+
+---
+
+# Strong thematic interpretation
+
+Even though this is math-heavy, it still fits **obsession** very well.
+
+Because the game rhythm becomes:
+
+- identify a mismatch,
+- reduce it,
+- reveal a smaller mismatch,
+- zoom in,
+- reduce that,
+- reveal something smaller,
+- continue until only minute defects remain.
+
+This is obsession made mechanical.
+
+The player is trained to think:
+
+> “The shape is basically solved…
+> but I can still remove that remaining defect.”
+
+That’s exactly the emotional structure you wanted.
+
+---
+
+# Best short pitch for the concept
+
+Here’s a concise version you could keep as the official pitch:
+
+> A first-person silhouette-matching game where the player reconstructs a target shape by launching harmonic components down a corridor. Each impact subtracts the chosen harmonic from the target, and the remaining residual becomes a new, closer target, magnified to reveal finer detail. Over several refinement steps, the player builds a full harmonic reconstruction of the original silhouette. At the end, the game reveals the original shape, all harmonics used, their sum, and a score based on accuracy, efficiency, and elegance.
+
+---
+
+# My honest assessment
+
+This is a **distinctive and potentially beautiful core mechanic**.
+
+Its strongest features are:
+
+- the **residual becoming the next target**
+- the **corridor as staged refinement**
+- the **final decomposition reveal**
+
+Those three ideas together are the identity of the game.
+
+The only real danger is usability:
+the relationship between parameter changes and silhouette outcome must feel learnable and satisfying.
+
+If you solve that, the concept has real originality.
+
+---
+
+If you want, the next useful step would be one of these:
+
+1. **turn this into a one-page game design document**
+2. **design the exact scoring formula and win conditions**
+3. **design the UI / screen layout**
+4. **work out the math model for silhouette representation and residual calculation**
+5. **prototype the first 5 tutorial levels**
