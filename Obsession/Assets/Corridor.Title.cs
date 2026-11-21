@@ -75,7 +75,7 @@ public partial class Corridor
 
     void ChooseSetting(int item)
     {
-        if (item==0) cameraEnabled = !cameraEnabled;
+        if (item==0) cameraEnabled = SupportsPortraitCamera && !cameraEnabled;
         else if (item==1) allowSecondPlayer = !allowSecondPlayer;
         else OpenFrontScreen(FrontScreen.Title);
     }
@@ -286,7 +286,7 @@ public partial class Corridor
             "Join Player 2         Enter or Start on second pad",
             "Cabinet               Stick to move. A/D frequency.",
             "                      B/E amplitude. C/F power. Select fires.",
-            "Camera                F8 toggles live face portraits."
+            SupportsPortraitCamera ? "Camera                F8 toggles live face portraits." : "Portraits             Animated arcade faces in the browser."
         };
         for(int i=0;i<rows.Length;i++)
             MenuText(new Rect(52,145+i*27,700,24),rows[i],15,menuWhite);
@@ -296,7 +296,7 @@ public partial class Corridor
     void DrawSettings()
     {
         MenuText(new Rect(52,56,700,50),"SETTINGS",32,menuCyan);
-        string[] values = { cameraEnabled ? "CAMERA  ON" : "CAMERA  OFF",
+        string[] values = { !SupportsPortraitCamera ? "PORTRAITS  PIXEL" : cameraEnabled ? "CAMERA  ON" : "CAMERA  OFF",
             allowSecondPlayer ? "PLAYER 2  ON" : "PLAYER 2  OFF", "BACK" };
         for(int i=0;i<values.Length;i++)
             if(MenuButton(new Rect(52,143+i*70,330,50),values[i],selectedSetting==i))

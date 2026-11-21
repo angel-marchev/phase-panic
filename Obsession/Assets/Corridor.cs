@@ -20,6 +20,7 @@ public partial class Corridor : MonoBehaviour
     readonly Color32[] portraitPixels = new Color32[PortraitSize*PortraitSize];
     readonly int[] portraitFrames = { -1, -1 };
     LivePortraitCamera livePortrait;
+    static bool SupportsPortraitCamera => Application.platform != RuntimePlatform.WebGLPlayer;
     bool cameraEnabled = true;
     static readonly Color LowMood = new Color(.31f,.045f,.07f);
     static readonly Color HighMood = new Color(.55f,.78f,.83f);
@@ -246,7 +247,7 @@ public partial class Corridor : MonoBehaviour
                 OpenFrontScreen(FrontScreen.Title);
             return;
         }
-        if (Keyboard.current?.f8Key.wasPressedThisFrame == true)
+        if (SupportsPortraitCamera && Keyboard.current?.f8Key.wasPressedThisFrame == true)
         {
             cameraEnabled = !cameraEnabled;
             if (cameraEnabled && stage!=Stage.Reveal) StartPortraitCamera();
@@ -823,7 +824,7 @@ public partial class Corridor : MonoBehaviour
 
     void StartPortraitCamera()
     {
-        if (!cameraEnabled || livePortrait != null || Application.isBatchMode) return;
+        if (!SupportsPortraitCamera || !cameraEnabled || livePortrait != null || Application.isBatchMode) return;
         livePortrait = new LivePortraitCamera();
         livePortrait.Start();
     }

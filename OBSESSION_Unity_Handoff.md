@@ -4,11 +4,11 @@ Snapshot of the playable demo on 21 November 2026. Open the `Obsession/` directo
 
 ## Keeping this handoff current
 
-The private GitHub repository is [angel-marchev/phase-panic](https://github.com/angel-marchev/phase-panic). Open its `Obsession/` subdirectory as the Unity project. The repository tracks the game assets, their Unity metadata, package manifests, project settings, MIDI source, and design documents. The unpacked Linux player is a local build artifact.
+The public GitHub repository is [angel-marchev/phase-panic](https://github.com/angel-marchev/phase-panic). The owner authorized the visibility change for GitHub Pages after GitHub declined to host Pages from the private repository on its current plan. Open `Obsession/` as the Unity project. The repository tracks the game assets, their Unity metadata, package manifests, project settings, MIDI source, design documents, and the static browser build in `docs/`. The unpacked Linux player is a local build artifact.
 
 Whenever you change the project, update this handoff in the same task. Revise the affected sections to describe the current behavior, the reason for the change, and what was verified. Preserve the original design reference verbatim in the appendix.
 
-Commit each completed project update together with its handoff change, push it to `main` on the private GitHub repository, and verify that the commit reached GitHub before reporting completion.
+Commit each completed project update together with its handoff change, push it to `main` on the GitHub repository, and verify that the commit reached GitHub before reporting completion.
 
 ## Run the demo
 
@@ -16,6 +16,16 @@ Commit each completed project update together with its handoff change, push it t
 2. Press **Play** and open **Game**. An untitled Scene view before Play is expected. The runtime bootstrap finds an existing corridor or configures a camera and attaches the demo. Ordinary Play works from an empty scene.
 3. Alternatively, **Obsession → Play corridor** creates or opens `Assets/Corridor.unity` and enters Play mode.
 4. Choose **Start** on the PHASE PANIC title screen. Tune the green waveform against the red silhouette. Press **Space** or click **Launch harmonic (Space)** to commit it. When the target reaches the front, inspect the decomposition and press any key or cabinet button to return to the splash screen.
+
+## Browser release
+
+Play at [Phase Panic on GitHub Pages](https://angel-marchev.github.io/phase-panic/). The packaged site is approximately 18 MiB. Chrome loaded it from an ordinary local HTTP server under a project subpath, initialized WebGL 2, resumed audio after a click, accepted a keyboard-tuned tutorial shot, displayed the illustrated intro, and rendered the playable corridor with its pixel portrait. Unity's release report counted three warnings.
+
+The Unity Web build lives in `docs/`. Serve this directory over HTTP or HTTPS. For local play, run `python3 -m http.server 8000 --bind 127.0.0.1 --directory docs` from the workspace root and open [localhost:8000](http://localhost:8000/). Click inside the game to activate audio and keyboard input. The browser version uses the animated pixel portraits because the desktop camera tracker requires a local Python/OpenCV process.
+
+For ordinary static hosting, upload the entire contents of `docs/` together. Asset URLs are relative and the loader includes gzip decompression fallback for servers that serve those files without a content-encoding header. For GitHub Pages, use `main` and `/docs` as the branch publishing source. The build includes `.nojekyll` and the font license.
+
+To rebuild, use Unity 6000.6.5f1 with Web Build Support installed. From the repository root, invoke the Unity executable with `-batchmode -quit -projectPath "$PWD/Obsession" -buildTarget WebGL -executeMethod WebRelease.Build`. This creates an empty startup scene for the runtime bootstrap and writes the release into `docs/`.
 
 ## Linux standalone release
 
