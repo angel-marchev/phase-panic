@@ -8,6 +8,8 @@ The private GitHub repository is [angel-marchev/phase-panic](https://github.com/
 
 Whenever you change the project, update this handoff in the same task. Revise the affected sections to describe the current behavior, the reason for the change, and what was verified. Preserve the original design reference verbatim in the appendix.
 
+Commit each completed project update together with its handoff change, push it to `main` on the private GitHub repository, and verify that the commit reached GitHub before reporting completion.
+
 ## Run the demo
 
 1. Open `Obsession/` in Unity Hub with Unity **6000.6.5f1**. Allow package import to finish. If Unity requests a restart after a graphics or input backend change, reopen the Editor.
