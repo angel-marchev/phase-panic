@@ -111,7 +111,7 @@ public partial class Corridor
         if (keys?.upArrowKey.wasPressedThisFrame == true || keys?.wKey.wasPressedThisFrame == true) move = -1;
         if (keys?.downArrowKey.wasPressedThisFrame == true || keys?.sKey.wasPressedThisFrame == true) move = 1;
         bool confirm = keys?.enterKey.wasPressedThisFrame == true || keys?.numpadEnterKey.wasPressedThisFrame == true
-            || keys?.spaceKey.wasPressedThisFrame == true || pad.ButtonStart.WasPressedThisFrame() || pad.ButtonC.WasPressedThisFrame();
+            || keys?.spaceKey.wasPressedThisFrame == true || pad.ButtonC.WasPressedThisFrame();
         if (screen==FrontScreen.Title)
         {
             selectedMenu = (selectedMenu+move+titleItems.Length)%titleItems.Length;
@@ -227,7 +227,7 @@ public partial class Corridor
                 return;
             }
         }
-        MenuText(new Rect(57,429,680,24),"↑ ↓  SELECT     ENTER / START  CONFIRM",14,menuWhite);
+        MenuText(new Rect(57,429,686,24),"↑ ↓  SELECT     ENTER / PAD C  CONFIRM     P1 START  QUIT",14,menuWhite);
     }
 
     void DrawPixelLogo(int x,int y,int pixel)
@@ -283,7 +283,7 @@ public partial class Corridor
             "Frequency             Y / H                [ / ]",
             "Power                 I / K                + / -",
             "Launch                Space                Shift",
-            "Join Player 2         Enter or Start on second pad",
+            "Start buttons         P1 quits the game. P2 joins (or Enter).",
             "Cabinet               Stick to move. A/D frequency.",
             "                      B/E amplitude. C/F power. Select fires.",
             SupportsPortraitCamera ? "Camera                F8 toggles live face portraits." : "Portraits             Animated arcade faces in the browser."

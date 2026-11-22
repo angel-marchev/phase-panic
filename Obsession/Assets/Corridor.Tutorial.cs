@@ -93,7 +93,7 @@ public partial class Corridor
     {
         var keys = Keyboard.current;
         var pad = cabinet.Arcade;
-        if (keys?.escapeKey.wasPressedThisFrame == true || pad.ButtonStart.WasPressedThisFrame())
+        if (keys?.escapeKey.wasPressedThisFrame == true)
         {
             OpenFrontScreen(FrontScreen.Title);
             return;
@@ -205,6 +205,6 @@ public partial class Corridor
     {
         if (MenuButton(new Rect(28,422,238,38),action,false)) TakeTutorialAction();
         MenuText(new Rect(277,424,246,34),"Space / Pad Select",15,menuWhite);
-        if (MenuButton(new Rect(532,422,244,38),"EXIT  Esc / Start",false)) OpenFrontScreen(FrontScreen.Title);
+        if (MenuButton(new Rect(532,422,244,38),"EXIT TUTORIAL  Esc",false)) OpenFrontScreen(FrontScreen.Title);
     }
 }

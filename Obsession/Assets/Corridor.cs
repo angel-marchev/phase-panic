@@ -236,6 +236,15 @@ public partial class Corridor : MonoBehaviour
     }
     void Update()
     {
+        if (cabinet.Arcade.ButtonStart.WasPressedThisFrame())
+        {
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#else
+            Application.Quit();
+#endif
+            return;
+        }
         if (screen != FrontScreen.Playing)
         {
             UpdateFrontScreen();

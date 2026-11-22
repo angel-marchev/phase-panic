@@ -15,7 +15,7 @@ Commit each completed project update together with its handoff change, push it t
 1. Open `Obsession/` in Unity Hub with Unity **6000.6.5f1**. Allow package import to finish. If Unity requests a restart after a graphics or input backend change, reopen the Editor.
 2. Open `Assets/Corridor.unity`, press **Play**, and switch to **Game**. The saved editor scene contains the Main Camera and Directional Light. The runtime bootstrap configures the camera and attaches the demo. Ordinary Play also works from an empty scene.
 3. Alternatively, **Obsession → Play corridor** creates or opens `Assets/Corridor.unity` and enters Play mode.
-4. Choose **Start** on the PHASE PANIC title screen. Tune the green waveform against the red silhouette. Press **Space** or click **Launch harmonic (Space)** to commit it. When the target reaches the front, inspect the decomposition and press any key or cabinet button to return to the splash screen.
+4. Choose **Start** on the PHASE PANIC title screen. Tune the green waveform against the red silhouette. Press **Space** or click **Launch harmonic (Space)** to commit it. When the target reaches the front, inspect the decomposition and press a key or a cabinet button other than Player 1 Start to return to the splash screen.
 
 ## Browser release
 
@@ -35,7 +35,11 @@ The 99 MiB release was built with Unity 6000.6.5f1, the Linux x86-64 Mono player
 
 ## Title screen and options
 
-PHASE PANIC starts on an 8-bit title screen with an original pixel logo and wave clash illustration. Choose Start, Settings, Help, Intro, or Tutorial with the mouse, Up/Down and Enter, or the first pad’s stick and Start. Start begins a fresh run immediately. The industrial synth loop starts on the splash screen and plays continuously through the comic, training, and entry into gameplay. The real results screen goes quiet and returning to the title starts the loop again. Settings toggles the live camera and Player 2 joining for the current session. Help shows both keyboard layouts, the cabinet controls, how to join Player 2, and F8 for the camera. Any keyboard key or cabinet button returns from Help, Intro, or the results screen. The results screen also has a clickable return button. Menu text uses the bundled DejaVu Sans Mono font and its license under Assets/Resources/Fonts.
+PHASE PANIC starts on an 8-bit title screen with an original pixel logo and wave clash illustration. Choose Start, Settings, Help, Intro, or Tutorial with the mouse, Up/Down and Enter, or the first pad’s stick and button C. Start begins a fresh run immediately. The industrial synth loop starts on the splash screen and plays continuously through the comic, training, and entry into gameplay. The real results screen goes quiet and returning to the title starts the loop again. Settings toggles the live camera and Player 2 joining for the current session. Help shows both keyboard layouts, the cabinet controls, how to join Player 2, and F8 for the camera. Any keyboard key or cabinet button except Player 1 Start returns from Help, Intro, or the results screen. The results screen also has a clickable return button. Menu text uses the bundled DejaVu Sans Mono font and its license under Assets/Resources/Fonts.
+
+Player 1 Start quits the application immediately from every screen, including during a shot, cooldown or detail zoom. In the Unity Editor it stops Play Mode. In a browser it ends the running player in the current tab. Menu confirmation uses Player 1 button C, Enter, or Space. Player 2 Start and keyboard Enter still join the second player during a run.
+
+Unity Play Mode testing verified that the two pads act independently. In Chrome, simulated standard gamepads and the DragonRise cabinet’s 12-button, 7-axis raw layout confirmed that Player 1 C starts a run, Player 2 Start joins, and Player 1 Start triggers Unity’s shutdown callback. The rebuilt Ubuntu player passed the splash, tutorial, and gameplay smoke test.
 
 ### Quiet the Glitch
 
@@ -51,7 +55,7 @@ Illustration-story, original dark science fiction graphic novel interior page fo
 
 ### Tutorial
 
-**Tutorial** opens an untimed single-player practice level. Each of four drills isolates one layer of the same signal and leaves one control active. Amplitude changes hill height, frequency changes spacing, phase slides peaks sideways, and vertical offset lifts or lowers the entire line. Tune with the usual Player 1 keys or cabinet controls, or click the minus and plus buttons. Match green to red and fire with Space, cabinet Select, or the on-screen button. A miss gives a directional hint and allows a retry. A match compares the whole signal before and after the shot and waits for the player to continue. Escape, cabinet Start, or Exit leaves training.
+**Tutorial** opens an untimed single-player practice level. Each of four drills isolates one layer of the same signal and leaves one control active. Amplitude changes hill height, frequency changes spacing, phase slides peaks sideways, and vertical offset lifts or lowers the entire line. Tune with the usual Player 1 keys or cabinet controls, or click the minus and plus buttons. Match green to red and fire with Space, cabinet Select, or the on-screen button. A miss gives a directional hint and allows a retry. A match compares the whole signal before and after the shot and waits for the player to continue. Escape or the on-screen Exit button returns to the splash screen.
 
 The last drill opens the real results layout with the four practice shots. Four short notes explain the stack of harmonics, the original target and final sum, the residual and RMS, and the difference between Final Fit and its supporting metrics. A small fifth ripple deliberately survives so players can see what they would try next. Practice uses the gameplay sampler, tuning steps, subtraction, and scoring routines with power fixed at 1. A new tutorial or live run clears practice history. The drills and guided results live in `Obsession/Assets/Corridor.Tutorial.cs`.
 

@@ -406,6 +406,17 @@ public partial class @ArcadeControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""f32b98f5-f3d2-4243-a855-4c0758795aa5"",
+                    ""path"": ""<Joystick>/Button 3"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ButtonC"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""9f09db35-21e4-47f9-9fc1-3fbfdc764c1e"",
                     ""path"": ""<Keyboard>/o"",
                     ""interactions"": """",
@@ -529,6 +540,17 @@ public partial class @ArcadeControls: IInputActionCollection2, IDisposable
                     ""name"": """",
                     ""id"": ""56dae91e-e7fc-4da0-869c-100cb28a1886"",
                     ""path"": ""<Gamepad>/start"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ButtonStart"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ac29cfae-5b5d-4cdb-a5c6-5a0f70ab370d"",
+                    ""path"": ""<Joystick>/Button 10"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
