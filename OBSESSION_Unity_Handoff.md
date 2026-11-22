@@ -13,7 +13,7 @@ Commit each completed project update together with its handoff change, push it t
 ## Run the demo
 
 1. Open `Obsession/` in Unity Hub with Unity **6000.6.5f1**. Allow package import to finish. If Unity requests a restart after a graphics or input backend change, reopen the Editor.
-2. Press **Play** and open **Game**. An untitled Scene view before Play is expected. The runtime bootstrap finds an existing corridor or configures a camera and attaches the demo. Ordinary Play works from an empty scene.
+2. Open `Assets/Corridor.unity`, press **Play**, and switch to **Game**. The saved editor scene contains the Main Camera and Directional Light. The runtime bootstrap configures the camera and attaches the demo. Ordinary Play also works from an empty scene.
 3. Alternatively, **Obsession → Play corridor** creates or opens `Assets/Corridor.unity` and enters Play mode.
 4. Choose **Start** on the PHASE PANIC title screen. Tune the green waveform against the red silhouette. Press **Space** or click **Launch harmonic (Space)** to commit it. When the target reaches the front, inspect the decomposition and press any key or cabinet button to return to the splash screen.
 
